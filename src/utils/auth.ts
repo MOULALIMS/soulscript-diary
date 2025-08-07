@@ -28,32 +28,54 @@ export const createUser = async (
   email: string,
   password: string,
   displayName: string,
-  phone?: string // new optional argument
+  phone?: string
 ): Promise<User> => {
-  const { user } = await createUserWithEmailAndPassword(auth, email, password);
+  const allowedEmail = process.env.NEXT_PUBLIC_ALLOWED_EMAIL;
 
-  // Update user profile
-  await updateProfile(user, { displayName });
+  if (email !== allowedEmail) {
+    throw new Error("Email is not accepted due to restrictions.");
+  }
+  // 🚫 Block all signups explicitly
+  throw new Error(
+    "Account creation is restricted. Please sign in if you already have access."
+  );
 
-  // Save user profile in Firestore, including phone
-  const userProfile: UserProfile = {
-    uid: user.uid,
-    email: user.email!,
-    phoneNumber: phone || null,
-    plan: "free",
-    displayName:
-      user.displayName || displayName || "User" + user.uid.slice(0, 6),
-    createdAt: new Date(),
-    preferences: {
-      theme: "light",
-      reminderTime: "20:00",
-      enableReminders: true,
-    },
-  };
+  /*
+  // Check if the user already exists
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    throw new Error("Email already exists. Please sign in.");
+  } catch (error: any) {
 
-  await setDoc(doc(db, "users", user.uid), userProfile);
+    if (error.code === "auth/user-not-found") {
+       Proceed to create new user
+      const { user } = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-  return user;
+      await updateProfile(user, { displayName });
+
+      const userProfile: UserProfile = {
+        uid: user.uid,
+        email: user.email!,
+        phoneNumber: phone || null,
+        plan: "free",
+        displayName:
+          user.displayName || displayName || "User" + user.uid.slice(0, 6),
+        createdAt: new Date(),
+        preferences: {
+          theme: "light",
+          reminderTime: "20:00",
+          enableReminders: true,
+        },
+      };
+
+      await setDoc(doc(db, "users", user.uid), userProfile);
+      return user;
+    } else {
+      throw error;*/
 };
 
 export const signInUser = async (
