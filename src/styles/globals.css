@@ -1,0 +1,396 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&family=JetBrains+Mono:wght@400;500;600&display=swap");
+
+/* ----- Theme Variables (default: light) ----- */
+:root {
+  --color-primary: #3b82f6; /* Light theme primary blue */
+  --color-secondary: #ec4899;
+  --color-background: #ffffff;
+  --color-surface: #f8fafc;
+  --color-text: #1e293b;
+
+  --color-green: #22c55e;
+  --color-yellow: #eab308;
+  --color-blue: #3b82f6;
+  --color-purple: #8b5cf6;
+  --color-indigo: #6366f1;
+  --color-red: #ef4444;
+}
+
+/* Dark Theme */
+.theme-dark {
+  --color-primary: #60a5fa; /* Dark theme primary */
+  --color-secondary: #f472b6;
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-text: #f1f5f9;
+
+  /* You can adjust other colors suitably */
+  --color-green: #22c55e;
+  --color-yellow: #eab308;
+  --color-blue: #3b82f6;
+  --color-purple: #8b5cf6;
+  --color-indigo: #6366f1;
+  --color-red: #ef4444;
+}
+
+.theme-vintage {
+  --color-primary: #92400e;
+  --color-secondary: #b45309;
+  --color-background: #fef3e8;
+  --color-surface: #fde8d8;
+  --color-text: #451a03;
+}
+
+.theme-minimal {
+  --color-primary: #6b7280;
+  --color-secondary: #9ca3af;
+  --color-background: #fafafa;
+  --color-surface: #f3f4f6;
+  --color-text: #374151;
+}
+
+/* ----- Base Styling ----- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+html,
+body {
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.3s, color 0.3s;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-primary);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-secondary);
+}
+
+/* Links */
+a {
+  color: var(--color-primary);
+  transition: color 0.2s;
+  text-decoration: underline;
+}
+a:hover,
+a:focus {
+  color: var(--color-secondary);
+}
+
+/* Prose/Markdown, headings, lists */
+.prose {
+  color: var(--color-text) !important;
+  background: transparent !important;
+}
+.prose h1,
+.prose h2,
+.prose h3 {
+  color: var(--color-text) !important;
+}
+.prose h1 {
+  @apply text-2xl font-bold mb-4;
+}
+.prose h2 {
+  @apply text-xl font-semibold mb-3;
+}
+.prose h3 {
+  @apply text-lg font-medium mb-2;
+}
+.prose ul,
+.prose ol {
+  @apply mb-4 pl-6;
+}
+.prose li {
+  @apply mb-2;
+}
+.prose p {
+  @apply mb-4 leading-relaxed;
+}
+.prose blockquote {
+  @apply italic border-l-4 pl-4 my-4;
+  border-color: var(--color-primary);
+  opacity: 0.8;
+}
+.prose code {
+  @apply rounded px-1 py-0.5 font-mono text-sm;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+.prose a:hover {
+  color: var(--color-secondary) !important;
+}
+
+.prose ul,
+.prose ol {
+  @apply mb-4 pl-6;
+}
+
+.prose li {
+  @apply mb-2;
+}
+
+.prose blockquote {
+  @apply italic border-l-4 pl-4 my-4;
+  border-color: var(--color-primary);
+  color: var(--color-text);
+  opacity: 0.8;
+}
+
+.prose code {
+  @apply rounded px-1 py-0.5 font-mono text-sm;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+}
+
+/* ===========================
+   Animations
+   =========================== */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-pulse-soft {
+  animation: pulseSoft 2s infinite;
+}
+
+@keyframes pulseSoft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* ===========================
+   Responsive: Reduce prose size on small devices
+   =========================== */
+@media (max-width: 640px) {
+  .prose {
+    @apply text-sm;
+  }
+}
+
+/* ===========================
+   Utility: 'skeleton' for loading states
+   =========================== */
+.skeleton {
+  @apply animate-pulse bg-gray-300 rounded;
+}
+
+.skeleton-text {
+  @apply h-4 bg-gray-300 rounded;
+}
+
+/* ===========================
+   Print styles
+   =========================== */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    font-size: 12px;
+    line-height: 1.4;
+  }
+
+  .prose p {
+    margin-bottom: 0.5rem;
+  }
+}
+
+input:focus,
+button:focus {
+  outline: 2px solid var(--color-primary);
+}
+
+nav a,
+nav span {
+  color: var(--color-text);
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+/* LIGHT THEME */
+.theme-light {
+  --color-happy-bg: #fff8dc;
+  --color-happy-border: #facc15;
+  --color-happy-text: #b45309;
+
+  --color-sad-bg: #e0f2fe;
+  --color-sad-border: #3b82f6;
+  --color-sad-text: #1e40af;
+
+  --color-angry-bg: #fee2e2;
+  --color-angry-border: #dc2626;
+  --color-angry-text: #7f1d1d;
+
+  --color-anxious-bg: #fef9c3;
+  --color-anxious-border: #eab308;
+  --color-anxious-text: #78350f;
+
+  --color-excited-bg: #f0fdf4;
+  --color-excited-border: #22c55e;
+  --color-excited-text: #065f46;
+
+  --color-calm-bg: #f0f9ff;
+  --color-calm-border: #38bdf8;
+  --color-calm-text: #0c4a6e;
+
+  --color-frustrated-bg: #fef2f2;
+  --color-frustrated-border: #f87171;
+  --color-frustrated-text: #7f1d1d;
+
+  --color-content-bg: #ecfdf5;
+  --color-content-border: #34d399;
+  --color-content-text: #064e3b;
+}
+
+/* DARK THEME */
+.theme-dark {
+  --color-happy-bg: #4b5563;
+  --color-happy-border: #facc15;
+  --color-happy-text: #fde68a;
+
+  --color-sad-bg: #1e3a8a;
+  --color-sad-border: #60a5fa;
+  --color-sad-text: #dbeafe;
+
+  --color-angry-bg: #7f1d1d;
+  --color-angry-border: #ef4444;
+  --color-angry-text: #fecaca;
+
+  --color-anxious-bg: #78350f;
+  --color-anxious-border: #facc15;
+  --color-anxious-text: #fde68a;
+
+  --color-excited-bg: #064e3b;
+  --color-excited-border: #34d399;
+  --color-excited-text: #a7f3d0;
+
+  --color-calm-bg: #0c4a6e;
+  --color-calm-border: #38bdf8;
+  --color-calm-text: #bae6fd;
+
+  --color-frustrated-bg: #7f1d1d;
+  --color-frustrated-border: #f87171;
+  --color-frustrated-text: #fecaca;
+
+  --color-content-bg: #064e3b;
+  --color-content-border: #34d399;
+  --color-content-text: #ccfbf1;
+}
+
+/* VINTAGE THEME */
+.theme-vintage {
+  --color-happy-bg: #fff8e1;
+  --color-happy-border: #eab308;
+  --color-happy-text: #7c3aed;
+
+  --color-sad-bg: #fae8ff;
+  --color-sad-border: #d946ef;
+  --color-sad-text: #86198f;
+
+  --color-angry-bg: #ffe4e6;
+  --color-angry-border: #f43f5e;
+  --color-angry-text: #7f1d1d;
+
+  --color-anxious-bg: #fef3c7;
+  --color-anxious-border: #eab308;
+  --color-anxious-text: #78350f;
+
+  --color-excited-bg: #ecfccb;
+  --color-excited-border: #84cc16;
+  --color-excited-text: #365314;
+
+  --color-calm-bg: #ddf4ff;
+  --color-calm-border: #60a5fa;
+  --color-calm-text: #1e3a8a;
+
+  --color-frustrated-bg: #ffe4e6;
+  --color-frustrated-border: #fb7185;
+  --color-frustrated-text: #881337;
+
+  --color-content-bg: #f0fdf4;
+  --color-content-border: #22c55e;
+  --color-content-text: #14532d;
+}
+
+/* MINIMAL THEME */
+.theme-minimal {
+  --color-happy-bg: #f9fafb;
+  --color-happy-border: #d1d5db;
+  --color-happy-text: #111827;
+
+  --color-sad-bg: #f3f4f6;
+  --color-sad-border: #d1d5db;
+  --color-sad-text: #374151;
+
+  --color-angry-bg: #fef2f2;
+  --color-angry-border: #e5e7eb;
+  --color-angry-text: #b91c1c;
+
+  --color-anxious-bg: #fff7ed;
+  --color-anxious-border: #fde68a;
+  --color-anxious-text: #78350f;
+
+  --color-excited-bg: #f0fdf4;
+  --color-excited-border: #bbf7d0;
+  --color-excited-text: #065f46;
+
+  --color-calm-bg: #f0f9ff;
+  --color-calm-border: #bae6fd;
+  --color-calm-text: #0c4a6e;
+
+  --color-frustrated-bg: #fef2f2;
+  --color-frustrated-border: #fca5a5;
+  --color-frustrated-text: #7f1d1d;
+
+  --color-content-bg: #f9fafb;
+  --color-content-border: #d1fae5;
+  --color-content-text: #064e3b;
+}
