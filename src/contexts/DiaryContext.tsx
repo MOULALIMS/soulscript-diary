@@ -110,3 +110,5 @@ export const DiaryProvider: React.FC<DiaryProviderProps> = ({ children }) => {
     </DiaryContext.Provider>
   );
 };
+
+export type { DiaryEntry };

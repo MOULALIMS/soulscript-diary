@@ -1,8 +1,11 @@
 // pages/dashboard.tsx
 import React, { useState } from "react";
-import Link from "next/link";
 import { useAuth } from "@/contexts/AuthContext";
-import { useDiary } from "@/contexts/DiaryContext";
+import {
+  useDiary,
+  Mood,
+  DiaryEntry as DiaryEntryType,
+} from "@/contexts/DiaryContext";
 import { Button } from "@/components/Button";
 import { EntryCard } from "@/components/EntryCard";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
@@ -16,18 +19,23 @@ import {
   SparklesIcon,
   FireIcon,
 } from "@heroicons/react/24/outline";
-import { Mood } from "@/contexts/DiaryContext";
 import toast from "react-hot-toast";
 
 const DashboardPage: React.FC = () => {
   const { user, userProfile } = useAuth();
-  const { entries, loading, addEntry } = useDiary();
+  const { entries, loading, addEntry, updateEntry, deleteEntry } = useDiary();
 
   const [showNewEntryModal, setShowNewEntryModal] = useState(false);
   const [newEntryContent, setNewEntryContent] = useState("");
   const [newEntryMood, setNewEntryMood] = useState<Mood | null>(null);
   const [newEntryTags, setNewEntryTags] = useState("");
   const [savingEntry, setSavingEntry] = useState(false);
+
+  // For edit modal (optional)
+  const [updateEntryModalOpen, setupdateEntryModalOpen] = useState(false);
+  const [updateEntryData, setupdateEntryData] = useState<DiaryEntryType | null>(
+    null
+  );
 
   const analytics = entries.length > 0 ? getMoodAnalytics(entries) : null;
   const insights = entries.length > 0 ? getMoodInsights(entries) : [];
@@ -38,6 +46,7 @@ const DashboardPage: React.FC = () => {
     return entryDate.toDateString() === today.toDateString();
   });
 
+  // Create new entry handler
   const handleCreateEntry = async () => {
     if (!newEntryContent.trim() || !newEntryMood) {
       toast.error("Please fill in all fields");
@@ -61,6 +70,50 @@ const DashboardPage: React.FC = () => {
       toast.error("Failed to save entry");
     } finally {
       setSavingEntry(false);
+    }
+  };
+
+  // Edit entry handler (opens modal)
+  const handleupdateEntry = (entry: DiaryEntryType) => {
+    setupdateEntryData(entry);
+    setupdateEntryModalOpen(true);
+  };
+
+  // Save edited entry
+  const handleSaveEditedEntry = async () => {
+    if (!updateEntryData) return;
+    if (!updateEntryData.content.trim() || !updateEntryData.mood) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    setSavingEntry(true);
+    try {
+      await updateEntry(
+        updateEntryData.id,
+        updateEntryData.content,
+        updateEntryData.mood,
+        updateEntryData.tags
+      );
+      setupdateEntryModalOpen(false);
+      setupdateEntryData(null);
+      toast.success("Entry updated successfully!");
+    } catch (error) {
+      console.error("Error updating entry:", error);
+      toast.error("Failed to update entry");
+    } finally {
+      setSavingEntry(false);
+    }
+  };
+
+  // Delete entry handler
+  const handleDeleteEntry = async (entryId: string) => {
+    if (!entryId) return;
+    try {
+      await deleteEntry(entryId);
+      toast.success("Entry deleted successfully!");
+    } catch (error) {
+      console.error("Failed to delete entry", error);
+      toast.error("Failed to delete entry");
     }
   };
 
@@ -110,6 +163,7 @@ const DashboardPage: React.FC = () => {
         </div>
       </header>
 
+      {/* Main */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
         <section className="lg:col-span-2 space-y-8">
@@ -137,7 +191,12 @@ const DashboardPage: React.FC = () => {
             {todayEntries.length > 0 ? (
               <div className="space-y-4">
                 {todayEntries.map((entry) => (
-                  <EntryCard key={entry.id} entry={entry} />
+                  <EntryCard
+                    key={entry.id}
+                    entry={entry}
+                    onEdit={handleupdateEntry}
+                    onDelete={handleDeleteEntry}
+                  />
                 ))}
               </div>
             ) : (
@@ -176,7 +235,12 @@ const DashboardPage: React.FC = () => {
                   .filter((entry) => !todayEntries.includes(entry))
                   .slice(0, 5)
                   .map((entry) => (
-                    <EntryCard key={entry.id} entry={entry} />
+                    <EntryCard
+                      key={entry.id}
+                      entry={entry}
+                      onEdit={handleupdateEntry}
+                      onDelete={handleDeleteEntry}
+                    />
                   ))}
               </div>
             </section>
@@ -329,13 +393,13 @@ const DashboardPage: React.FC = () => {
               onChange={(e) => setNewEntryContent(e.target.value)}
               placeholder="What's on your mind today?"
               className="
-          w-full h-32 px-3 py-2 rounded-lg border 
-          bg-[var(--color-surface)] 
-          text-[var(--color-text)] 
-          placeholder-opacity-60 
-          focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] 
-          focus:border-[var(--color-primary)] resize-none
-        "
+                w-full h-32 px-3 py-2 rounded-lg border 
+                bg-[var(--color-surface)] 
+                text-[var(--color-text)] 
+                placeholder-opacity-60 
+                focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] 
+                focus:border-[var(--color-primary)] resize-none
+              "
             />
           </div>
 
@@ -350,13 +414,13 @@ const DashboardPage: React.FC = () => {
               onChange={(e) => setNewEntryTags(e.target.value)}
               placeholder="work, family, health (separated by commas)"
               className="
-          w-full px-3 py-2 border rounded-lg 
-          bg-[var(--color-surface)] 
-          text-[var(--color-text)] 
-          placeholder-opacity-60 
-          focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] 
-          focus:border-[var(--color-primary)]
-        "
+                w-full px-3 py-2 border rounded-lg 
+                bg-[var(--color-surface)] 
+                text-[var(--color-text)] 
+                placeholder-opacity-60 
+                focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] 
+                focus:border-[var(--color-primary)]
+              "
             />
             <p className="text-xs mt-1 opacity-70">
               Add tags to organize your entries
@@ -380,6 +444,94 @@ const DashboardPage: React.FC = () => {
             </Button>
           </div>
         </div>
+      </Modal>
+
+      {/* Edit Entry Modal */}
+      <Modal
+        isOpen={updateEntryModalOpen}
+        onClose={() => setupdateEntryModalOpen(false)}
+        title="Edit Entry"
+        size="large"
+      >
+        {updateEntryData && (
+          <div className="space-y-6 text-[var(--color-primary)]">
+            <MoodSelector
+              selectedMood={updateEntryData.mood}
+              onMoodSelect={(m) =>
+                setupdateEntryData((prev: DiaryEntryType | null) =>
+                  prev ? { ...prev, mood: m } : prev
+                )
+              }
+            />
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Your thoughts
+              </label>
+              <textarea
+                value={updateEntryData.content}
+                onChange={(e) =>
+                  setupdateEntryData((prev: DiaryEntryType | null) =>
+                    prev ? { ...prev, content: e.target.value } : prev
+                  )
+                }
+                placeholder="What's on your mind today?"
+                className="
+                  w-full h-32 px-3 py-2 rounded-lg border 
+                  bg-[var(--color-surface)] 
+                  text-[var(--color-text)] 
+                  placeholder-opacity-60 
+                  focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] 
+                  focus:border-[var(--color-primary)] resize-none
+                "
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium mb-2">
+                Tags (optional)
+              </label>
+              <input
+                type="text"
+                value={updateEntryData.tags?.join(", ") || ""}
+                onChange={(e) =>
+                  setupdateEntryData((prev: DiaryEntryType | null) =>
+                    prev
+                      ? {
+                          ...prev,
+                          tags: e.target.value.split(",").map((t) => t.trim()),
+                        }
+                      : prev
+                  )
+                }
+                placeholder="work, family, health (separated by commas)"
+                className="
+                  w-full px-3 py-2 border rounded-lg 
+                  bg-[var(--color-surface)] 
+                  text-[var(--color-text)] 
+                  placeholder-opacity-60 
+                  focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] 
+                  focus:border-[var(--color-primary)]
+                "
+              />
+              <p className="text-xs mt-1 opacity-70">
+                Edit tags to organize your entry
+              </p>
+            </div>
+
+            <div className="flex justify-end space-x-3 pt-4 border-t border-[var(--color-surface)]">
+              <Button
+                variant="outline"
+                onClick={() => setupdateEntryModalOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button onClick={handleSaveEditedEntry} loading={savingEntry}>
+                Save Changes
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

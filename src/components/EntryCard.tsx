@@ -1,5 +1,6 @@
+// EntryCard.tsx
 import React, { useState } from "react";
-import { DiaryEntry } from "@/utils/diary";
+import { DiaryEntry } from "@/utils/diary"; // Your DiaryEntry type/interface
 import { MoodBadge } from "./MoodSelector";
 import { formatEntryDate } from "@/utils/date";
 import { Button } from "./Button";
