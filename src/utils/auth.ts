@@ -31,24 +31,20 @@ export const createUser = async (
   phone?: string
 ): Promise<User> => {
   const allowedEmail = process.env.NEXT_PUBLIC_ALLOWED_EMAIL;
+  const dummyPassword =
+    process.env.NEXT_PUBLIC_DUMMY_PASSWORD || "defaultgnjrn@gjrnRGRgrn";
 
   if (email !== allowedEmail) {
     throw new Error("Email is not accepted due to restrictions.");
   }
-  // 🚫 Block all signups explicitly
-  throw new Error(
-    "Account creation is restricted. Please sign in if you already have access."
-  );
 
-  /*
   // Check if the user already exists
   try {
     await signInWithEmailAndPassword(auth, email, password);
     throw new Error("Email already exists. Please sign in.");
   } catch (error: any) {
-
     if (error.code === "auth/user-not-found") {
-       Proceed to create new user
+      // Proceed to create new user
       const { user } = await createUserWithEmailAndPassword(
         auth,
         email,
@@ -75,7 +71,9 @@ export const createUser = async (
       await setDoc(doc(db, "users", user.uid), userProfile);
       return user;
     } else {
-      throw error;*/
+      throw error;
+    }
+  }
 };
 
 export const signInUser = async (
