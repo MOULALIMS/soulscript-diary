@@ -24,18 +24,28 @@ export interface UserProfile {
   };
 }
 
+// Checks if the email is in Firestore allowed_users collection
+const isEmailAllowed = async (email: string): Promise<boolean> => {
+  const allowedRef = doc(db, "allowed_users", email);
+  const snapshot = await getDoc(allowedRef);
+  return snapshot.exists();
+};
+
 export const createUser = async (
   email: string,
   password: string,
   displayName: string,
-  phone?: string // new optional argument
+  phone?: string
 ): Promise<User> => {
+  const allowed = await isEmailAllowed(email);
+  if (!allowed) {
+    throw new Error("Access denied: Access Only for Family Members.");
+  }
+
   const { user } = await createUserWithEmailAndPassword(auth, email, password);
 
-  // Update user profile
   await updateProfile(user, { displayName });
 
-  // Save user profile in Firestore, including phone
   const userProfile: UserProfile = {
     uid: user.uid,
     email: user.email!,
@@ -60,6 +70,11 @@ export const signInUser = async (
   email: string,
   password: string
 ): Promise<User> => {
+  const allowed = await isEmailAllowed(email);
+  if (!allowed) {
+    throw new Error("Access denied: This email is not authorized.");
+  }
+
   const { user } = await signInWithEmailAndPassword(auth, email, password);
   return user;
 };
