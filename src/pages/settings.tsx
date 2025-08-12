@@ -17,6 +17,7 @@ import {
 import toast from "react-hot-toast";
 import { jsPDF } from "jspdf";
 import { getMoodEntries, DiaryEntry } from "@/utils/diary";
+import withAuth from "@/utils/withAuth";
 
 const SettingsPage: React.FC = () => {
   const { user, userProfile } = useAuth();
@@ -531,4 +532,4 @@ const SettingsPage: React.FC = () => {
   );
 };
 
-export default SettingsPage;
+export default withAuth(SettingsPage);

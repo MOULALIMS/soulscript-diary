@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/Button";
 import { Dialog } from "@/components/Dialog"; // Import your Dialog modal
+import withAuth from "@/utils/withAuth";
 
 const PlansPage: React.FC = () => {
   const { userProfile } = useAuth();
@@ -112,4 +113,4 @@ const PlansPage: React.FC = () => {
   );
 };
 
-export default PlansPage;
+export default withAuth(PlansPage);

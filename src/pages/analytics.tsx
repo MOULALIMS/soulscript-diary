@@ -23,6 +23,7 @@ import {
   CalendarDaysIcon,
   ArrowTrendingUpIcon,
 } from "@heroicons/react/24/outline";
+import withAuth from "@/utils/withAuth";
 
 const moodColors: Record<string, string> = {
   happy: "#FCD34D",
@@ -419,4 +420,4 @@ const AnalyticsPage: React.FC = () => {
   );
 };
 
-export default AnalyticsPage;
+export default withAuth(AnalyticsPage);

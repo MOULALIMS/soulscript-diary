@@ -8,6 +8,7 @@ import {
   ChevronRightIcon,
   CalendarDaysIcon,
 } from "@heroicons/react/24/outline";
+import withAuth from "@/utils/withAuth";
 
 const CalendarPage: React.FC = () => {
   const { entries, loading } = useDiary();
@@ -435,4 +436,4 @@ const CalendarPage: React.FC = () => {
   );
 };
 
-export default CalendarPage;
+export default withAuth(CalendarPage);

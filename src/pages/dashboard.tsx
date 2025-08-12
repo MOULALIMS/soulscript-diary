@@ -20,10 +20,28 @@ import {
   FireIcon,
 } from "@heroicons/react/24/outline";
 import toast from "react-hot-toast";
+import { useRouter } from "next/router";
+import withAuth from "@/utils/withAuth";
 
 const DashboardPage: React.FC = () => {
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, loading: authLoading } = useAuth();
+  const router = useRouter();
   const { entries, loading, addEntry, updateEntry, deleteEntry } = useDiary();
+
+  React.useEffect(() => {
+    if (!user && !loading) {
+      router.replace("/auth");
+    }
+  }, [user, loading, router]);
+
+  // While waiting for auth info, just show spinner
+  if (authLoading || (!user && !authLoading)) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-background)] text-[var(--color-text)]">
+        <LoadingSpinner size="large" />
+      </div>
+    );
+  }
 
   const [showNewEntryModal, setShowNewEntryModal] = useState(false);
   const [newEntryContent, setNewEntryContent] = useState("");
@@ -537,4 +555,4 @@ const DashboardPage: React.FC = () => {
   );
 };
 
-export default DashboardPage;
+export default withAuth(DashboardPage);
