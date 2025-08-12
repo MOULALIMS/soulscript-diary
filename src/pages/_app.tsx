@@ -9,6 +9,7 @@ import "@/styles/globals.css";
 import toast from "react-hot-toast";
 
 function MyApp({ Component, pageProps }: AppProps) {
+  /*
   const [unlocked, setUnlocked] = useState(false);
   const [code, setCode] = useState("");
 
@@ -47,7 +48,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           fontFamily: "Inter, sans-serif",
         }}
       >
-        {/* 🔄 Subtle Top Animation */}
+        {/* 🔄 Subtle Top Animation }
         <div
           style={{
             width: "48px",
@@ -60,7 +61,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           }}
         />
 
-        {/* 🧠 Title */}
+        {/* 🧠 Title }
         <h1
           style={{
             fontSize: "1.5rem",
@@ -80,7 +81,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           This project is private. Please enter your code to continue.
         </p>
 
-        {/* 🔐 Input Field */}
+        {/* 🔐 Input Field }
         <input
           type="password"
           value={code}
@@ -100,7 +101,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           }}
         />
 
-        {/* 🚀 Unlock Button */}
+        {/* 🚀 Unlock Button }
         <button
           onClick={handleUnlock}
           style={{
@@ -123,7 +124,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           Unlock
         </button>
 
-        {/* 🔧 Inline Animation */}
+        {/* 🔧 Inline Animation }
         <style jsx>{`
           @keyframes spin {
             0% {
@@ -137,6 +138,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       </div>
     );
   }
+  */
 
   return (
     <ThemeProvider>
